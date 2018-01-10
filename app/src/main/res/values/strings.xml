@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Server</string>
+    <string name="lab_start_server">Start</string>
+    <string name="title_activity_data_received">DataReceivedActivity</string>
+</resources>
