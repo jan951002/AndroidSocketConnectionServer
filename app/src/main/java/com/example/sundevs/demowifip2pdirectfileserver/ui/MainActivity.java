@@ -2,7 +2,6 @@ package com.example.sundevs.demowifip2pdirectfileserver.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.content.ContextCompat;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,10 +11,9 @@ import android.widget.TextView;
 import com.example.sundevs.demowifip2pdirectfileserver.R;
 import com.example.sundevs.demowifip2pdirectfileserver.ServerContract;
 import com.example.sundevs.demowifip2pdirectfileserver.Utilities;
-import com.example.sundevs.demowifip2pdirectfileserver.config.socket.ServerThread;
-import com.example.sundevs.demowifip2pdirectfileserver.domain.Book;
+import com.example.sundevs.demowifip2pdirectfileserver.config.socket.Server;
+import com.example.sundevs.demowifip2pdirectfileserver.domain.SaleOrder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -25,29 +23,29 @@ import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends Activity implements ServerContract.MainView {
 
-    public static final int PORT = 2027;
-    public final static int TCP_BUFFER_SIZE = 1024*1024;
-
     @BindView(R.id.lab_ip_addres)
     TextView labIpAddress;
     @BindView(R.id.btn_start_server)
     Button btnStartServer;
     @BindView(R.id.books_list)
-    ListView booksList;
+    ListView salesOrdersList;
 
-    private ArrayList<String> books;
+    private ArrayList<String> salesOrders;
     private ArrayAdapter<String> adapter;
+    private ServerContract.Server server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        server = new Server();
+        server.attachView(this);
         setIpAddress(Utilities.getIPAddress(true));
         toastyConfig();
-        books = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, books);
-        booksList.setAdapter(adapter);
+        salesOrders = new ArrayList<>();
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, salesOrders);
+        salesOrdersList.setAdapter(adapter);
     }
 
     @Override
@@ -61,11 +59,11 @@ public class MainActivity extends Activity implements ServerContract.MainView {
     }
 
     @Override
-    public void addBook(final Book book) {
+    public void addSaleOrder(final SaleOrder saleOrder) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                books.add(book.toString());
+                salesOrders.add(saleOrder.toString());
                 adapter.notifyDataSetChanged();
             }
         });
@@ -86,7 +84,7 @@ public class MainActivity extends Activity implements ServerContract.MainView {
         Thread thread = new Thread(){
             @Override
             public void run() {
-                initServerSocket();
+                server.listen();
             }
         };
         thread.start();
@@ -110,23 +108,4 @@ public class MainActivity extends Activity implements ServerContract.MainView {
                 break;
         }
     }
-
-    public void initServerSocket(){
-        try {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            java.net.ServerSocket serverSocket = new java.net.ServerSocket(PORT);
-            serverSocket.setReceiveBufferSize(TCP_BUFFER_SIZE);
-            System.out.println("Listening");
-            while (true) {
-                System.out.println("New order");
-                Runnable run = new ServerThread(serverSocket.accept(), this);
-                Thread thread = new Thread(run);
-                thread.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

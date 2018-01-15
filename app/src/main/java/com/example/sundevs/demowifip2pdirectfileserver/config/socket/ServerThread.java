@@ -1,7 +1,7 @@
 package com.example.sundevs.demowifip2pdirectfileserver.config.socket;
 
 import com.example.sundevs.demowifip2pdirectfileserver.ServerContract;
-import com.example.sundevs.demowifip2pdirectfileserver.domain.Book;
+import com.example.sundevs.demowifip2pdirectfileserver.domain.SaleOrder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,14 +32,14 @@ public class ServerThread implements Runnable {
             out = new ObjectOutputStream(socket.getOutputStream());
             String jsonObject;
             while ((jsonObject = in.readLine()) != null) {
-                Book book = Book.create(jsonObject);
-                String outResult = "Successful: " + book.toString();
-                view.addBook(book);
+                SaleOrder saleOrder = SaleOrder.create(jsonObject);
+                String outResult = "Successful: " + saleOrder.getBusiness() + ", "+ saleOrder.getCreatedAt().toString();
+                view.addSaleOrder(saleOrder);
                 System.out.println(outResult);
                 out.writeObject(outResult);
             }
         } catch (IllegalArgumentException | IOException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println("Error: " + ex.getMessage() );
         }
     }
 }
