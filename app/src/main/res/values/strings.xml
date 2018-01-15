@@ -2,4 +2,7 @@
     <string name="app_name">Server</string>
     <string name="lab_start_server">Start</string>
     <string name="title_activity_data_received">DataReceivedActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

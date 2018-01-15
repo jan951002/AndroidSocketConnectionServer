@@ -1,6 +1,7 @@
 package com.example.sundevs.demowifip2pdirectfileserver;
 
 import com.example.sundevs.demowifip2pdirectfileserver.domain.Book;
+import com.example.sundevs.demowifip2pdirectfileserver.domain.SaleOrder;
 import com.example.sundevs.demowifip2pdirectfileserver.ui.MessageType;
 
 /**
@@ -8,10 +9,12 @@ import com.example.sundevs.demowifip2pdirectfileserver.ui.MessageType;
  */
 
 public interface ServerContract {
-    interface ViewData{
+    interface ViewData {
         void setIpAddress(String s);
+
         void addBook(Book book);
     }
+
     interface MainView {
         void showMessage(String message, MessageType type);
 
@@ -19,15 +22,16 @@ public interface ServerContract {
 
         void setIpAddress(String s);
 
-        void addBook(Book book);
+        void addSaleOrder(SaleOrder saleOrder);
 
 
     }
 
-    interface ThreadServer extends BasePresenter {
+    interface ConnectivityChangePresenter extends BasePresenter {
     }
 
-    interface MainPresenter extends BasePresenter {
-        void initServer();
+    interface Server extends BasePresenter {
+        void listen();
     }
+
 }
